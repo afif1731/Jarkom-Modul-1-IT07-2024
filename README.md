@@ -1,5 +1,12 @@
 # Laporan Resmi Praktikum Jarkom - Modul 1 - IT07 - 2024
 
+## Anggota Kelompok
+
+| Nama | NRP |
+| ---- | --- |
+| Muhammad Afif | 5027221032 |
+| Alma Amira Dewani | 5027221054 |
+
 ## Pendahuluan
 
 Pada Modul 1 ini, praktikum dilaksanakan melalui platform CTFd dengan tampilan platform adalah sebagai berikut
@@ -202,8 +209,48 @@ Flag ditemukan
 
 #### Langkah Pengerjaan
 
-### Soal 10 - malwaew
+1. Lakukan follow pada salah satu stream dengan protocol HTTP dan berbentuk request. Didapatkan hasil sebagai berikut :
 
-![Soal secret](./Media/soal-malwaew.png)
+![hasil](./Media//fuzz-1.png)
 
-#### Langkah Pengerjaan
+Melalui hasil tersebut dapat ditemukan banyak informasi yang berguna. Namun untuk menjawab soal, informasi - informasi yang diambil dari hasil di atas adalah :
+
+  + Attacker melakukan post request pada path `/`
+
+  + Attacker memiliki IP address `10.33.1.154`, terdapat pada source yang tertera pada stream HTTP POST
+
+  + Attacker melakukan POST request pada HTTP, maka port yang dituju ialah port `80`, terdapat pula pada target port yang terdapat di samping kolom length pada setiap TCP stream.
+
+  + Attacker juga menggunakan user agent bernama `Fuzz Faster U Fool` (disingkat ffuf) dengan versi `v2.0.0-dev`
+
+Dalam satu kali follow, telah didapat empat jawaban dari pertanyaan pada soal. Kini yang tersisa adalah mencari kredensial yang digunakan oleh attacker untuk berhasil masuk ke dalam website tersebut.
+
+2. Untuk mencari kredensial, gunakan filter di mana stream menggunakan protocol HTTP, bukan merupakan request, dan bukan merupakan response error.
+
+Filter yang digunakan adalah `_ws.col.protocol == "HTTP" && _ws.col.info != "POST / HTTP/1.1  (application/x-www-form-urlencoded)" && _ws.col.info != "HTTP/1.1 200 OK  (text/html)"`, karena response 200 digunakan untuk response login yang bernilai salah, maka dicari sebuah response lain yang tidak memiliki kode 200.
+
+Maka hasil dari filter tersebut adalah sebagai berikut :
+
+![response 302](./Media/fuzz-2.png)
+
+Hasil tersebut menunjukkan bahwa terdapat sebuah response dengan kode 302. Dilakukan follow, dan karena hasil follow tidak menampilkan request dari response yang dituju, maka dilakukan pencarian dengan kata kunci `302 Found`
+
+![creds](./Media/fuzz-3.png)
+
+Ditemukan bahwa kredensial yang digunakan oleh attacker untuk login adalah : 
+
+  - username : `admin`
+
+  - password : `sUp3rSecretp@ssw0rd`
+
+3. Masukkan jawaban pada soal terminal sesuai dengan format dan dapatkan flagnya
+
+![flag](./Media/fuzz-4.png)
+
+Flag ditemukan
+
+### Kesimpulan
+
+Pada praktikum ini, kelompok IT07 melakukan analisis connection menggunakan wireshark untuk mencari data - data penting yang dapat dimanfaatkan kedepannya. Praktikum ini menggunakan sistem Capture the Flag dengan platform CTFd yang mana terdapat 10 soal untuk dikerjakan. Namun kelompok IT07 hanya dapat menjawab 7 dari 10 soal yang ada ditambah dengan 2 soal lain (soal `secret` dan `fuzz`) yang berhasil dikerjakan setelah waktu berakhir.
+
+Langkah pengerjaan soal yang dilakukan oleh kelompok IT07 tentu tidak bisa dianggap sebagai langkah yang terbaik, untuk kedepannya pengerjaan soal dengan model seperti ini dapat diusahakan untuk dikerjakan dengan lebih efektif dan efisien.
