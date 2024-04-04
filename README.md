@@ -18,6 +18,50 @@ IT07 berhasil menjawab 7 dari 10 soal dengan benar, namun terdapat dua soal tamb
 
 #### Langkah Pengerjaan
 
+1. Masuk pada terminal melalui `nc 10.15.40.20 10002` (tertera pada soal) untuk mengetahui data apa saja yang diperlukan pada soal ini.
+
+![terminal evidence](./Media/evidence-1.png)
+
+Tampak bahwa data pertama yang diperlukan untuk menyelesaikan soal ini ialah domain dari perusahaan yang diserang.
+
+2. Gunakan wireshark untuk melakukan analisis stream yang diberikan, lalu gunakan filter `_ws.col.protocol == "HTTP"` agar tampilan hanya menampilkan stream dengan protocol HTTP saja. Hal ini diperlukan karena di sini attacker melakukan brute force login pada laman HTTP.
+
+![filter http](./Media/evidence-2.png)
+
+Tampilan tersebut menunjukkan 1163 stream yang ditampilkan setelah melakukan filter
+
+3. Kemudian, karena login merupakan bentuk interaksi POST pada HTTP, kita amati salah satu stream POST yang terdapat di bagian paling atas.
+
+![stream HTTP POST](./Media/evidence-3.png)
+
+Dari satu stream ini kita dapat menemukan host dari koneksi HTTP tersebut adalah `nanomate-solutions.com`, kita juga menemukan informasi tambahan berupa server website yang digunakan oleh perusahaan nanomate yaitu `apache/2.4.56`. Nama server yang kita temukan akan digunakan pada pertanyaan kedua dari soal ini
+
+4. Masukkan dua jawaban pertama pada terminal, karena permintaan dari soal untuk bagian nama server berupa `name-version`, maka nama server yang sudah ditemukan sebelumnya diubah menjadi `apache-2.4.56`.
+
+![jawaban 1](./Media/evidence-4.png)
+
+Setelah mendapatkan konfirmasi bahwa kedua jawaban pertama kita bernilai benar, pengerjaan berlanjut pada pertanyaan ketiga dan keempat.
+
+5. Gunakan filter `frame ~ "success"` untuk menampilkan stream yang mengandung kata tersebut. Umumnya login yang berhasil selalu diikuti dengan kata success pada message-nya. Lakukan analisis pada beberapa stream HTTP pertama dan ditemukan salah satunya memiliki line text/html bertuliskan `Login Successful`
+
+![filter sukses](./Media/evidence-5.png)
+
+6. Lakukan filter sekali lagi, kali ini dengan menggunakan `frame ~ "login successful"`. Terdapat 4 stream yang ada, lakukan analisis stream satu per satu
+
+![filter lagi](./Media/evidence-6.png)
+
+7. Saat melakukan follow stream pada stream paling pertama, di dapat informasi sebagai berikut
+
+![hasil follow](./Media/evidence-7.png)
+
+Dari sana tampak bahwa POST request dilakukan pada path `/app/includes/process_login.php` menggunakan email `tareq@gmail%2ecom` (menurut [wikipedia](https://en.wikipedia.org/wiki/Percent-encoding), `%2e` berarti titik, maka niali sebenarnya dari email tersebut adalah `tareq@gmail.com`) dan password `tareq@nanomate`
+
+8. Masukkan jawaban yang ditemukan pada pertanyaan terminal
+
+![flag](./Media/evidence-8.png)
+
+Flag didapatkan
+
 ### Soal 02 - ATM or ATP or FTP ? 🤔
 
 ![Soal ATM or ATP or FTP](./Media/soal-atm.png)
@@ -43,6 +87,18 @@ IT07 berhasil menjawab 7 dari 10 soal dengan benar, namun terdapat dua soal tamb
 
 #### Langkah Pengerjaan
 
+1. Karena setiap kali percobaan login dilakukan user juga harus melakukan input password, maka lakukan filter dengan memasukkan response berupa permintaan untuk mengisi password sebagai parameternya. dengan melakukan sedikit analisis permukaan, ditemukan bahwa bentuk response yang dicari adalah `Response: 331 Please specify the password`. Sehingga filter yang digunakan adalah sebagai berikut `_ws.col.info == "Response: 331 Please specify the password."`
+
+![jumlah](./Media/howmany-1.png)
+
+Dari filter yang telah dilakukan, di kanan bawah terlihat ada berapa jumlah stream yang ter-display saat filter diberlakukan. Pada saat ini terlihat bahwa terdapat `934` stream yang terdisplay, hal tersebut berarti bahwa terdapat 934 percobaan login pada stream ini.
+
+2. Masukkan jawaban pada pertanyaan terminal dan dapatkan flagnya
+
+![flag](./Media/howmany-2.png)
+
+Flag ditemukan
+
 ### Soal 04 - trace him
 
 ![Soal trace him](./Media/soal-tracehim.png)
@@ -66,6 +122,22 @@ IT07 berhasil menjawab 7 dari 10 soal dengan benar, namun terdapat dua soal tamb
 ![Soal creds](./Media/soal-creds.png)
 
 #### Langkah Pengerjaan
+
+1. Karena pada soal dijelaskan bahwa server berbentuk FTP, maka lakukan filter pada protocol ftp
+
+![filter ftp](./Media/creds-1.png)
+
+2. Lakukan follow pada salah satu stream yang memiliki info `request`
+
+![follow ftp](./Media/creds-2.png)
+
+Dari sana ditemukan bahwa attacker sukse melakukan login dengan kredensial USER `h3ngk3rTzy` dan PASS `S!l3ncE`.
+
+3. Masukkan jawaban sesuai format pada pertanyaan terminal dan dapatkan flagnya
+
+![flag](./Media/creds-3.png)
+
+Flag ditemukan
 
 ### Soal 06 - malwleowleo
 
