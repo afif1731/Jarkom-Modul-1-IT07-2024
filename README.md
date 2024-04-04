@@ -94,7 +94,7 @@ IT07 berhasil menjawab 7 dari 10 soal dengan benar, namun terdapat dua soal tamb
 1. Buka wsl lalu masukan nc nya untuk melihat soal yang ingin ditanyakan. Disini, kita disuruh untuk mencari nama attacker yang sudah melakukan serangan tersebut.
    ![Whoami1](./Media/whoami1.png)
 
-2. Untuk mencari nama attacker tersebut, kita perlu mendownload file malware yang telah dikrimkan oleh attacker tersebut.
+2. Untuk mencari nama attacker tersebut, kita perlu mendownload file malware yang telah dikrimkan oleh attacker.
    ![Whoami2](./Media/whoami2.png)
 
 3. Buka file .c yang sudah didowload tadi lalu akan didapatkan teks yang terenkripsi dalam format base64, yaitu `SGVsbG8gbXkgbmFtZSBpcyBQYXVsIEF0cmVpZGVzCg==`.
@@ -108,8 +108,30 @@ IT07 berhasil menjawab 7 dari 10 soal dengan benar, namun terdapat dua soal tamb
 
 ### Soal 08 - secret
 
-Text here
+![Soal secret](./Media/soal-secret.png)
+
+#### Langkah Pengerjaan
+
+1. Buka wsl lalu masukan nc nya untuk melihat soal yang ingin ditanyakan. Disini, kita disuruh untuk mencari pesan yg dikutip oleh attacker.
+   ![secret1](./Media/secret1.png)
+
+2. Download file lainnya yang dikirim oleh attacker selain file malware. Disini ditemukan file `mirza.jpg`.
+   ![secret2](./Media/secret3.png)
+
+3. Setelah mendownload, buka filenya lalu akan ditemukan pesan dalam tanda kutip, yaitu "MIO MIRZA".
+   ![secret3](./Media/secret4.jpg)
+
+4. Masukan jawaban yang telah didapatkan ke terminal lalu dapatkan flagnya.
+   ![secret4](./Media/secret5.png)
 
 ### Soal 09 - fuzz
 
-Text here
+![Soal fuzz](./Media/soal-fuzz.png)
+
+#### Langkah Pengerjaan
+
+### Soal 10 - malwaew
+
+![Soal secret](./Media/soal-malwaew.png)
+
+#### Langkah Pengerjaan
